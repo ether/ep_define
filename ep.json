@@ -1,0 +1,17 @@
+{
+  "parts": [
+    {
+      "name": "set_title_on_pad",
+      "client_hooks": {
+        "postAceInit": "ep_define/static/js/index:postAceInit",
+        "handleClientMessage_CUSTOM": "ep_define/static/js/index"
+      },
+      "hooks": {
+        "eejsBlock_body":"ep_define/eejs",
+        "eejsBlock_styles":"ep_define/eejs",
+        "eejsBlock_dd_help":"ep_define/eejs",
+        "handleMessage": "ep_define/handleMessage"
+      }
+    }
+  ]
+}
