@@ -1,11 +1,11 @@
 {
   "name": "ep_define",
   "description": "Define and Research Words",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": {
-    "name": "johnyma22",
+    "name": "John McLear",
     "email": "john@mclear.co.uk",
-    "url": "John McLear"
+    "url": "http://mclear.co.uk"
   },
   "dependencies": {
     "wordnet": "*"
