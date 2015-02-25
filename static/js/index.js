@@ -6,7 +6,7 @@ exports.handleClientMessage_CUSTOM = function(hook, context, cb){
         $(message).each(function(){
           var title = this.meta.words[0].word;
           var text = this.glossary;
-          $.gritter.add({title: title + " - " + this.meta.synsetType, "text": text });
+          $.gritter.add({title: title.toUpperCase() + " - " + this.meta.synsetType, "text": text });
           return false; // end the each
         });
       }
@@ -43,9 +43,9 @@ exports.postAceInit = function(name, context){
 
     // On click ensure all image controls are hidden
     $inner.on("click", ".definitionkey", function(e){
-      var d = e.currentTarget.innerText; // d is the string we're looking for a definition of
-      d = d.trim().toLowerCase(); // Remove whitespace and send to Lower
-      $.gritter.add({title: d, "text": internalD[d] });
+      var d = e.currentTarget.textContent; // d is the string we're looking for a definition of
+      d = d.trim().toLowerCase(); // Removewhitespace and send to Lower
+      $.gritter.add({title: d.toUpperCase(), "text": internalD[d] });
       return false;
     });
   });
@@ -125,10 +125,15 @@ var keySanitizingFn = function(result){ // Does nothing
 /* Given "bababa means bobobob" we need to know "bababa" and also context after "means" */
 var definitionSanitizingFn = function(result){
   if(!result) return result;
+  var input = result.input;
   result.index = -0;
   // First word...
   var dKey = result.input.split(" ")[0].toLowerCase();
-  internalD[dKey] = result.input;
+
+  // If the stuff begins with a * which is EPs special char remove it
+  if(dKey.substring(0,1) === "*") dKey = dKey.substring(1, dKey.length);
+  if(input.substring(0,1) === "*") input = input.substring(1, input.length);
+  internalD[dKey] = input;
   return result;
 };
 
