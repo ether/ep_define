@@ -14,16 +14,14 @@ exports.handleClientMessage_CUSTOM = function(hook, context, cb){
   }
 }
 
+var internalD =  { // TEMP HACK until we have Server provided JSON blobbage
+  "banana": "ardvark",
+  "blue": "Moah ardvark"
+};
+
 exports.postAceInit = function(name, context){
 
-  var internalD = {
-    "banana":{
-      definition: "ardvark"
-    },
-    "blue":{
-      definition: "Moah ardvark"
-    }
-  };
+  clientVars.plugins.plugins.ep_define.internalD = internalD;
 
   $('#ep_define_input_ok').click(function(){
     senddefine();
@@ -44,9 +42,10 @@ exports.postAceInit = function(name, context){
     var $inner = $(doc).find('#innerdocbody');
 
     // On click ensure all image controls are hidden
-    $inner.on("click", ".definition", function(e){
+    $inner.on("click", ".definitionkey", function(e){
       var d = e.currentTarget.innerText; // d is the string we're looking for a definition of
-      $.gritter.add({title: d, "text": internalD[d].definition });
+      d = d.trim().toLowerCase(); // Remove whitespace and send to Lower
+      $.gritter.add({title: d, "text": internalD[d] });
       return false;
     });
   });
@@ -97,26 +96,45 @@ var getCustomRegexpFilter = function(customRegexp, tag, linestylefilter){
 exports.aceGetFilterStack = function(name, context){
   var linestylefilter = context.linestylefilter;
   // This can probably be tidied up a LOT
-  var filter = getCustomRegexpFilter(
-    new CustomRegexp(definitionRegexp, linkSanitizingFn),
+  var keyfilter = getCustomRegexpFilter(
+    new CustomRegexp(definitionKeyRegexp, keySanitizingFn),
+    'definitionkey',
+    linestylefilter
+  );
+  var deffilter = getCustomRegexpFilter(
+    new CustomRegexp(definitionRegexp, definitionSanitizingFn),
     'definition',
     linestylefilter
   );
 
- return [filter];
+  return [keyfilter, deffilter];
+  // return [deffilter];
 }
 
-/* Define the regular expressions we will use to detect if a string has a definition */
-var definitionRegexp = new RegExp(/banana|blue/g);
+/* Define the regular expressions we will use to detect if a string has a definitionkey */
+var definitionKeyRegexp = new RegExp(/banana|blue/g); // TEMP Hack -- Actually this can be sorted from internalD;
 
-/* Take the string and remove the first and last 2 characters IE [[foo]] returns foo */
-var linkSanitizingFn = function(result){
+/* Define the regular expressions we will use to detect if a string has a definitionkey */
+var definitionRegexp = new RegExp(/means/g); // TEMP HACK
+
+var keySanitizingFn = function(result){ // Does nothing
   if(!result) return result;
+  return result;
+};
+
+/* Given "bababa means bobobob" we need to know "bababa" and also context after "means" */
+var definitionSanitizingFn = function(result){
+  if(!result) return result;
+  result.index = -0;
+  // First word...
+  var dKey = result.input.split(" ")[0].toLowerCase();
+  internalD[dKey] = result.input;
   return result;
 };
 
 exports.aceCreateDomLine = function(name, context){
   var definition;
+  var definitionKey;
   var cls = context.cls;
   var domline = context.domline;
 
@@ -129,15 +147,32 @@ exports.aceCreateDomLine = function(name, context){
     });
   }
 
-  if (definition)
+  if (cls.indexOf('definitionkey') >= 0) // if it already has the class of definition
   {
-    var modifier = {
-      extraOpenTags: '<span class="definition">',
-      extraCloseTags: '</span>',
-      cls: cls
+    cls = cls.replace(/(^| )definitionkey:(\S+)/g, function(x0, space, d)
+    {
+      definitionKey = d;
+      return space + "d";
+    });
+  }
+
+  if (definitionKey || definition)
+  {
+    if(definitionKey){
+      var modifier = {
+        extraOpenTags: '<span class="definitionkey">',
+        extraCloseTags: '</span>',
+        cls: cls
+      }
+    }
+    if(definition){
+      var modifier = {
+        extraOpenTags: '<span class="definitionkey">',
+        extraCloseTags: '</span>',
+        cls: cls
+      }
     }
     return [modifier];
   }
   return;
 }
-
