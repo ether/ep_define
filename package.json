@@ -2,8 +2,30 @@
   "name": "ep_define",
   "description": "Define and Research Words",
   "version": "0.0.4",
-  "author": "johnyma22 (John McLear) <john@mclear.co.uk>",
-  "dependencies": {"wordnet":"*"},
-  "engines": { "node": ">= 0.4.1" },
-  "repository" : { "type" : "git", "url"  : "https://github.com/JohnMcLear/ep_define.git" }
+  "author": {
+    "name": "johnyma22",
+    "email": "john@mclear.co.uk",
+    "url": "John McLear"
+  },
+  "dependencies": {
+    "wordnet": "*"
+  },
+  "engines": {
+    "node": ">= 0.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JohnMcLear/ep_define.git"
+  },
+  "readme": "# Define And Research Words in Etherpad\n\n![Define](http://i.imgur.com/I75UDqV.png)\n\n## Installation\nInstall using /admin/plugins or npm install ep_define\nInstalling with git will require an npm install to install the deps\n\n## Usage\nClick the settings button then type in the input field and click Define.  It will show a pop up..\n\n\n## TODO\n* i18n support\n* Clean refactor <-- see .ejs file!\n* Multiple languages\n",
+  "readmeFilename": "README.md",
+  "gitHead": "d03d95959185ffe8bcc8defda3a3bf9af735df9b",
+  "bugs": {
+    "url": "https://github.com/JohnMcLear/ep_define/issues"
+  },
+  "homepage": "https://github.com/JohnMcLear/ep_define",
+  "_id": "ep_define@0.0.4",
+  "scripts": {},
+  "_shasum": "2b73b3911ec324f42a63e19774a53601a796706a",
+  "_from": "ep_define@"
 }
