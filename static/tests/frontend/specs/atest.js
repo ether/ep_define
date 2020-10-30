@@ -6,7 +6,7 @@ describe("Define", function(){
   });
 
   // Create Pad
-   // Defining text shows a gritter message
+  // Defining text shows a gritter message
 
   it("Define a test string", function(done) {
     this.timeout(60000);
@@ -19,8 +19,7 @@ describe("Define", function(){
     var $editorContainer = chrome$("#editorcontainer");
 
     helper.waitFor(function(){
-      $gritter = chrome$("#gritter-notice-wrapper");
-      if($gritter) return true;
+      if(chrome$("#gritter-notice-wrapper")) return true;
     }).done(function(){
       expect($gritter).to.not.be(false);
       done();
