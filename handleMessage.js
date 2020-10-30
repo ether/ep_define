@@ -23,7 +23,7 @@ exports.handleMessage = function(hook_name, context, callback){
           if(context.message.data.type){
             if(context.message.data.type === 'define'){
               isDefineMessage = true;
-            } 
+            }
           }
         }
       }
@@ -31,7 +31,6 @@ exports.handleMessage = function(hook_name, context, callback){
   }
   if(!isDefineMessage){
     callback(false);
-    return false;
   }
 
   var message = context.message.data;
@@ -44,7 +43,6 @@ exports.handleMessage = function(hook_name, context, callback){
      * myAuthorId -- The Id of the author who is trying to talk to the targetAuthorId
   ***/
   if(message.action === 'sendDefineMessage'){
-    
     wordnet.lookup(message.message, function(err, definitions) {   
 
       if(err) return;
