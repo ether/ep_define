@@ -1,6 +1,6 @@
-describe("Define", function(){
-  //create a new pad before each test run
-  beforeEach(function(cb){
+describe('Define', function () {
+  // create a new pad before each test run
+  beforeEach(function (cb) {
     helper.newPad(cb);
     this.timeout(60000);
   });
@@ -8,22 +8,21 @@ describe("Define", function(){
   // Create Pad
   // Defining text shows a gritter message
 
-  it("Define a test string", function(done) {
+  it('Define a test string', function (done) {
     this.timeout(60000);
-    var chrome$ = helper.padChrome$;
-    if(chrome$('#options-pageview').attr("checked")) chrome$('#options-pageview').click();
+    const chrome$ = helper.padChrome$;
+    if (chrome$('#options-pageview').attr('checked')) chrome$('#options-pageview').click();
 
-    chrome$("#ep_define_input").val("time");
-    chrome$("#ep_define_input_ok").click();
+    chrome$('#ep_define_input').val('time');
+    chrome$('#ep_define_input_ok').click();
 
-    var $editorContainer = chrome$("#editorcontainer");
+    const $editorContainer = chrome$('#editorcontainer');
 
-    helper.waitFor(function(){
-      if(chrome$("#gritter-notice-wrapper")) return true;
-    }).done(function(){
+    helper.waitFor(() => {
+      if (chrome$('#gritter-notice-wrapper')) return true;
+    }).done(() => {
       expect($gritter).to.not.be(false);
       done();
     });
   });
-
 });
