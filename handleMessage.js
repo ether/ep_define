@@ -1,19 +1,17 @@
+'use strict';
+
 /** *
 *
 * Responsible for negotiating messages between two clients
 *
 ****/
 
-const authorManager = require('../../src/node/db/AuthorManager');
-const padMessageHandler = require('../../src/node/handler/PadMessageHandler');
-const async = require('../../src/node_modules/async');
-
 const wordnet = require('wordnet');
 
 /*
 * Handle incoming messages from clients
 */
-exports.handleMessage = function (hook_name, context, callback) {
+exports.handleMessage = (hookName, context, callback) => {
   // Firstly ignore any request that aren't about chat
   let isDefineMessage = false;
   if (context) {
@@ -42,7 +40,7 @@ exports.handleMessage = function (hook_name, context, callback) {
      * message -- the actual message
      * myAuthorId -- The Id of the author who is trying to talk to the targetAuthorId
   ***/
-  if (message.action === 'sendDefineMessage') {
+  if (message && (message.action === 'sendDefineMessage')) {
     wordnet.lookup(message.message, (err, definitions) => {
       if (err) return;
       const msg = {

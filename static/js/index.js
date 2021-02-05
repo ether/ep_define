@@ -1,6 +1,8 @@
-exports.handleClientMessage_CUSTOM = function (hook, context, cb) {
+'use strict';
+
+exports.handleClientMessage_CUSTOM = (hook, context, cb) => {
   if (context.payload) {
-    if (context.payload.action == 'recieveDefineMessage') {
+    if (context.payload.action === 'recieveDefineMessage') {
       const message = context.payload.message;
       if (message) {
         $(message).each(function () {
@@ -14,7 +16,7 @@ exports.handleClientMessage_CUSTOM = function (hook, context, cb) {
   }
 };
 
-exports.postAceInit = function (name, context) {
+exports.postAceInit = (name, context) => {
   $('#ep_define_input_ok').click(() => {
     senddefine();
     return false;
@@ -29,17 +31,17 @@ exports.postAceInit = function (name, context) {
   });
 };
 
-function senddefine() {
+const senddefine = () => {
   const myAuthorId = pad.getUserId();
   const padId = pad.getPadId();
-  var message = $('#ep_define_input').val().toLowerCase();
+  const message = $('#ep_define_input').val().toLowerCase();
   // Send chat message to send to the server
-  var message = {
+  const sendMsg = {
     type: 'define',
     action: 'sendDefineMessage',
     message,
     padId,
     myAuthorId,
   };
-  pad.collabClient.sendMessage(message); // Send the define request to the server
-}
+  pad.collabClient.sendMessage(sendMsg); // Send the define request to the server
+};
