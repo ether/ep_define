@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Define', function () {
   // create a new pad before each test run
   beforeEach(function (cb) {
@@ -8,7 +10,7 @@ describe('Define', function () {
   // Create Pad
   // Defining text shows a gritter message
 
-  it('Define a test string', function (done) {
+  it('Define a test string', async function () {
     this.timeout(60000);
     const chrome$ = helper.padChrome$;
     if (chrome$('#options-pageview').attr('checked')) chrome$('#options-pageview').click();
@@ -16,13 +18,8 @@ describe('Define', function () {
     chrome$('#ep_define_input').val('time');
     chrome$('#ep_define_input_ok').click();
 
-    const $editorContainer = chrome$('#editorcontainer');
-
-    helper.waitFor(() => {
-      if (chrome$('#gritter-notice-wrapper')) return true;
-    }).done(() => {
-      expect($gritter).to.not.be(false);
-      done();
+    await helper.waitForPromise(() => {
+      chrome$('#gritter-notice-wrapper').is(':visible') === true;
     });
   });
 });

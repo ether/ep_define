@@ -11,9 +11,14 @@ exports.handleClientMessage_CUSTOM = (hook, context, cb) => {
           $.gritter.add({title: `${title} - ${this.meta.synsetType}`, text});
           return false; // end the each
         });
+      } else {
+        const title = 'No Match';
+        const text = 'No definition found';
+        $.gritter.add({title: `${title}`, text});
       }
     }
   }
+  cb();
 };
 
 exports.postAceInit = (name, context) => {
