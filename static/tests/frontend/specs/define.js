@@ -18,8 +18,6 @@ describe('Define', function () {
     chrome$('#ep_define_input').val('time');
     chrome$('#ep_define_input_ok').click();
 
-    await helper.waitForPromise(() => {
-      chrome$('#gritter-notice-wrapper').is(':visible') === true;
-    });
+    await helper.waitForPromise(() => chrome$('.gritter-item').is(':visible') === true);
   });
 });
