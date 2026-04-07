@@ -5,7 +5,7 @@
 ![Define](http://i.imgur.com/I75UDqV.png)
 
 ## Installation
-Install using /admin/plugins or npm install ep_define
+Install using /admin/plugins or pnpm run plugins install ep_define
 Installing with git will require an npm install to install the deps
 ```
 cd node_modules/ep_define
