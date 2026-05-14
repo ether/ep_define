@@ -6,12 +6,16 @@ test.beforeEach(async ({page}) => {
 });
 
 test.describe('ep_define', () => {
+  test('define input is placed in the right toolbar area', async ({page}) => {
+    await expect(page.locator('.menu_right #ep_define_toolbar')).toBeVisible();
+  });
+
   test('Defining a word shows a gritter notification', async ({page}) => {
-    // The form lives inside the (closed) help dropdown; the legacy spec
-    // poked it via jQuery without opening anything, so do the same here:
-    // set the value via DOM and dispatch the click handler directly.
+    const defineInput = page.locator('#ep_define_input');
+    await defineInput.focus();
     await page.evaluate(() => {
-      const input = document.querySelector<HTMLInputElement>('#ep_define_input')!;
+      const input = document.querySelector<HTMLInputElement>('#ep_define_input');
+      if (input == null) throw new Error('define input missing');
       input.value = 'time';
       document.querySelector<HTMLButtonElement>('#ep_define_input_ok')!.click();
     });

@@ -22,18 +22,20 @@ exports.handleClientMessage_CUSTOM = (hook, context, cb) => {
 };
 
 exports.postAceInit = (name, context) => {
-  $('#ep_define_input_ok').click(() => {
-    senddefine();
-    return false;
-  });
-  $('.dropdown-help').hover(() => {
+  const fillInputFromSelection = () => {
     context.ace.callWithAce((ace) => {
       const rep = ace.ace_getRep();
       const line = rep.lines.atIndex(rep.selStart[0]);
       const selectedText = line.text.substring(rep.selStart[1], rep.selEnd[1]);
       $('#ep_define_input').val(selectedText);
     }, 'define', true);
+  };
+
+  $('#ep_define_input_ok').click(() => {
+    senddefine();
+    return false;
   });
+  $('#ep_define_input').on('focus pointerenter', fillInputFromSelection);
 };
 
 const senddefine = () => {
