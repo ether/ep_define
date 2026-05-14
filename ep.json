@@ -7,8 +7,7 @@
         "handleClientMessage_CUSTOM": "ep_define/static/js/index"
       },
       "hooks": {
-        "eejsBlock_mySettings":"ep_define/eejs",
-        "eejsBlock_dd_help":"ep_define/eejs",
+        "eejsBlock_editbarMenuRight":"ep_define/eejs",
         "handleMessage": "ep_define/handleMessage"
       }
     }
