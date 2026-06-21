@@ -56,7 +56,7 @@ jobs:
         working-directory: ./etherpad-lite
         shell: bash
         run: |
-          pnpm run dev &
+          pnpm run dev > /tmp/devserver.log 2>&1 &
           connected=false
           can_connect() {
             curl -sSfo /dev/null http://localhost:9001/ || return 1
@@ -67,6 +67,19 @@ jobs:
           while [ $(($(now) - $start)) -le 30 ] && ! can_connect; do
             sleep 1
           done
+          # DIAGNOSTIC: probe the editor bundle + a pad page directly
+          sleep 8
+          echo "===== /watch/pad bundle size ====="
+          curl -s "http://localhost:9001/watch/pad?hash=x" -o /tmp/watchpad.js
+          wc -c /tmp/watchpad.js
+          echo "ep_define occurrences in bundle: $(grep -c ep_define /tmp/watchpad.js || true)"
+          head -c 400 /tmp/watchpad.js; echo
+          echo "===== first 200 lines of dev server log ====="
+          head -200 /tmp/devserver.log
+          echo "===== esbuild/build errors in dev log ====="
+          grep -iE "esbuild|could not resolve|transform failed|build failed|✘|error" /tmp/devserver.log | head -40 || true
+          cp /tmp/devserver.log etherpad-lite/devserver.log || true
+          cp /tmp/watchpad.js etherpad-lite/watchpad.js || true
           cd src
           pnpm exec playwright install chromium --with-deps
           # DIAGNOSTIC: only ep_define spec, single retry, capture artifacts
@@ -80,5 +93,7 @@ jobs:
           path: |
             etherpad-lite/src/test-results/**
             etherpad-lite/src/playwright-report/**
+            etherpad-lite/devserver.log
+            etherpad-lite/watchpad.js
           if-no-files-found: warn
           retention-days: 3
