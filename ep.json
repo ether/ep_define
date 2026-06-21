@@ -3,7 +3,7 @@
     {
       "name": "ep_define",
       "hooks": {
-        "handleMessage": "ep_define/handleMessage"
+        "handleMessage": "ep_define/handleMessage_noop"
       }
     }
   ]
