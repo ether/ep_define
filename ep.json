@@ -1,7 +1,11 @@
 {
   "parts": [
     {
-      "name": "ep_define"
+      "name": "ep_define",
+      "client_hooks": {
+        "postAceInit": "ep_define/static/js/index:postAceInit",
+        "handleClientMessage_CUSTOM": "ep_define/static/js/index"
+      }
     }
   ]
 }
