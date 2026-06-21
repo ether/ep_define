@@ -97,10 +97,16 @@ jobs:
             await page.waitForTimeout(35000);
             const state = await page.evaluate(() => ({
               aceOuter: !!document.querySelector('iframe[name=ace_outer]'),
+              iframeCount: document.querySelectorAll('iframe').length,
               editorContainer: document.querySelector('#editorcontainer') && document.querySelector('#editorcontainer').className,
               loadingVisible: !!(document.querySelector('#editorloadingbox') && document.querySelector('#editorloadingbox').offsetParent),
               receivedClientVars: !!window.clientVars,
-              padPresent: !!window.pad,
+              padPresent: typeof window.pad,
+              padeditor: typeof window.padeditor,
+              padeditorAce: !!(window.padeditor && window.padeditor.ace),
+              winKeys: Object.keys(window).filter(k=>/pad|ace|client|collab|handshake/i.test(k)).slice(0,40),
+              connMsg: (document.querySelector('#connectivity, #editorloadingbox .editorloadingbox-message:not([hidden])') || {}).innerText,
+              bodyModal: (document.querySelector('.modaldialog, #connectivity .visible, [id*=error]') || {}).innerText,
             })).catch(e=>'eval:'+e.message);
             console.log('=== FINAL STATE ===', JSON.stringify(state));
             await browser.close();
