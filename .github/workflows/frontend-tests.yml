@@ -79,11 +79,36 @@ jobs:
           grep -nE "routeHandlers|is not a function|\[ERROR\]" /tmp/devserver.log | grep -viE "update check|fetch failed" | head -30 || true
           cd src
           pnpm exec playwright install chromium --with-deps
-          # DIAGNOSTIC: only ep_define spec, single retry, capture artifacts
-          pnpm run test-ui --project=chromium --retries=1 --max-failures=4 \
-            define.spec || true
-          echo "===== server log AFTER tests: errors during pad loads ====="
-          grep -nE "routeHandlers|is not a function|\[ERROR\]|\[ENTER\]|\[LEAVE\]|CLIENT_READY|disconnect" /tmp/devserver.log | grep -viE "update check|fetch failed" | tail -40 || true
+          # DIAGNOSTIC: instrumented pad load to find the silent client hang
+          cat > /tmp/probe.cjs <<'PROBE'
+          const { chromium } = require(process.cwd() + '/node_modules/playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await (await browser.newContext()).newPage();
+            page.on('console', m => console.log('CONSOLE['+m.type()+']', m.text()));
+            page.on('pageerror', e => console.log('PAGEERROR', e.message, '\n', e.stack));
+            await page.addInitScript(() => {
+              window.addEventListener('error', e => console.log('WINERROR:', e.message, (e.error&&e.error.stack)||''));
+              window.addEventListener('unhandledrejection', e => {
+                const r = e.reason; console.log('UNHANDLEDREJECTION:', (r&&(r.stack||r.message))||String(r));
+              });
+            });
+            await page.goto('http://localhost:9001/p/diagprobe'+Date.now(), {waitUntil:'domcontentloaded', timeout:30000}).catch(e=>console.log('goto:'+e.message));
+            await page.waitForTimeout(35000);
+            const state = await page.evaluate(() => ({
+              aceOuter: !!document.querySelector('iframe[name=ace_outer]'),
+              editorContainer: document.querySelector('#editorcontainer') && document.querySelector('#editorcontainer').className,
+              loadingVisible: !!(document.querySelector('#editorloadingbox') && document.querySelector('#editorloadingbox').offsetParent),
+              receivedClientVars: !!window.clientVars,
+              padPresent: !!window.pad,
+            })).catch(e=>'eval:'+e.message);
+            console.log('=== FINAL STATE ===', JSON.stringify(state));
+            await browser.close();
+          })();
+          PROBE
+          echo "===== INSTRUMENTED PROBE OUTPUT ====="
+          node /tmp/probe.cjs 2>&1 | grep -vE "Could not find string" | head -120 || true
+          echo "===== END PROBE ====="
       - name: Stage diagnostic logs
         if: always()
         working-directory: ./etherpad-lite
