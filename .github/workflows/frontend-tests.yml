@@ -69,4 +69,16 @@ jobs:
           done
           cd src
           pnpm exec playwright install chromium --with-deps
-          pnpm run test-ui --project=chromium
+          # DIAGNOSTIC: only ep_define spec, single retry, capture artifacts
+          pnpm run test-ui --project=chromium --retries=1 --max-failures=4 \
+            define.spec || true
+      - name: Upload Playwright traces (diagnostic)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pw-traces
+          path: |
+            etherpad-lite/src/test-results/**
+            etherpad-lite/src/playwright-report/**
+          if-no-files-found: warn
+          retention-days: 3
