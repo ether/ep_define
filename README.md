@@ -6,11 +6,8 @@
 
 ## Installation
 Install using /admin/plugins or pnpm run plugins install ep_define
-Installing with git will require an npm install to install the deps
-```
-cd node_modules/ep_define
-npm install
-```
+Installing with git will require an pnpm install to install the deps
+
 
 ## Usage
 Click the settings button then type in the input field and click Define.  It will show a pop up..
